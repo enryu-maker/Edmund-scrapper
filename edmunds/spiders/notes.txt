@@ -1,0 +1,4 @@
+
+
+trim=response.css('select').extract()
+trim.css('option::text').getall()
