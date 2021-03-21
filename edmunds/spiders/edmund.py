@@ -42,45 +42,45 @@ class car(scrapy.Spider):
         for self.offer in self.cash_offers:
             #our AI LOL ;-)
             if 'Student/College Grad for Retail or Lease' in self.offer:
-                self.Student.append(self.offer)
+                self.Student.append(self.offer.split()[0])
             elif 'Military for Retail or Lease' in self.offer:
-                self.military.append(self.offer)
+                self.military.append(self.offer.split()[0])
             elif 'First Responder for Retail or Lease' in self.offer:
-                self.First_Responder.append(self.offer)
+                self.First_Responder.append(self.offer.split()[0])
             elif 'Lease Bonus Cash' in self.offer:
-                self.Customer_Bonus.append(self.offer)
+                self.Customer_Bonus.append(self.offer.split()[0])
             elif 'Loyalty for Retail or Lease' in self.offer:
-                self.Loyalty.append(self.offer)
+                self.Loyalty.append(self.offer.split()[0])
             elif 'Mobility for Retail' in self.offer:
-                self.Mobility.append(self.offer)
+                self.Mobility.append(self.offer.split()[0])
             elif 'Conquest for Retail or Lease' in self.offer:
-                self.Conquest.append(self.offer)
+                self.Conquest.append(self.offer.split()[0])
             elif 'Loyalty Lender Bonus Cash' in self.offer:
-                self.Loyalty_Lender_Bonus_Cash.append(self.offer)
+                self.Loyalty_Lender_Bonus_Cash.append(self.offer.split()[0])
             elif 'Student/College Grad Lender Bonus' in self.offer:
-                self.Student_College_Grad_Lender_Bonus.append(self.offer)
+                self.Student_College_Grad_Lender_Bonus.append(self.offer.split()[0])
             elif 'Conquest for Retail' in self.offer:
-                self.Conquest_for_Retail.append(self.offer)
+                self.Conquest_for_Retail.append(self.offer.split()[0])
             elif 'Mobility for Retail' in self.offer:
-                self.Mobility_for_Retail.append(self.offer)
+                self.Mobility_for_Retail.append(self.offer.split()[0])
             elif 'Clean Fuel Rebate for Retail or Lease' in self.offer:
-                self.Clean_Fuel_Rebate_for_Retail_or_Lease.append(self.offer)
+                self.Clean_Fuel_Rebate_for_Retail_or_Lease.append(self.offer.split()[0])
             elif 'Military for Lease' in self.offer:
-                self.Military_for_Lease.append(self.offer)
+                self.Military_for_Lease.append(self.offer.split()[0])
             elif 'Customer Bonus Cash for Retail' in self.offer:
-                self.Customer_Bonus_Cash_for_Retail.append(self.offer)
+                self.Customer_Bonus_Cash_for_Retail.append(self.offer.split()[0])
             elif 'Lender Bonus for Standard APR' in self.offer:
-                self.Lender_Bonus_for_Standard_APR.append(self.offer)
+                self.Lender_Bonus_for_Standard_APR.append(self.offer.split()[0])
             elif 'Student/College Grad for Lease' in self.offer:
-                self.Student_College_Grad_for_Lease.append(self.offer)
+                self.Student_College_Grad_for_Lease.append(self.offer.split()[0])
             elif 'First Responder for Lease' in self.offer:
-                self.First_Responder_for_Lease.append(self.offer)
+                self.First_Responder_for_Lease.append(self.offer.split()[0])
             elif 'Military for Retail' in self.offer:
-                self.Military_for_Retail.append(self.offer)
+                self.Military_for_Retail.append(self.offer).split()[0]
             elif 'First Responder for Retail' in self.offer:
-                self.First_Responder_for_Retail.append(self.offer)
+                self.First_Responder_for_Retail.append(self.offer.split()[0])
             elif 'Limited Term Bonus Cash' in self.offer:
-                self.Limited_Term_Bonus_Cash.append(self.offer)
+                self.Limited_Term_Bonus_Cash.append(self.offer.split()[0])
             else:
                 pass
         self.trim_value=response.css('option::text').getall()
