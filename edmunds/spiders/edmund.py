@@ -39,6 +39,7 @@ class car(scrapy.Spider):
 
         self.offers=response.css('li.unordered-list-item')
         self.cash_offers=self.offers.css('span::text').getall()
+        
         for self.offer in self.cash_offers:
             #our AI LOL ;-)
             if 'Student/College Grad for Retail or Lease' in self.offer:
