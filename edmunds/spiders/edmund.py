@@ -6,6 +6,7 @@ class car(scrapy.Spider):
     http_pass='somepass'
     name='edmund'#name of spider
     start_urls=['https://www.edmunds.com/car-incentives/']
+
     def parse(self, response):   
         for cars in response.css('a.text-primary-darker::attr(href)'):
             url = response.urljoin(cars.extract())
@@ -15,100 +16,73 @@ class car(scrapy.Spider):
         for links in response.css('a.incentives-link.text-primary-darker.d-flex.flex-column.h-100::attr(href)'):
             url=response.urljoin(links.extract())
             yield scrapy.Request(url, callback = self.final_parse)#going to next page
-    def final_parse(self,response):
-        self.Student=[]
-        self.military=[]
-        self.First_Responder=[]
-        self.Customer_Bonus=[]
-        self.Loyalty=[]
-        self.Conquest=[]
-        self.Mobility=[]
-        self.Loyalty_Lender_Bonus_Cash=[]
-        self.Student_College_Grad_Lender_Bonus=[]
-        self.Conquest_for_Retail=[]
-        self.Mobility_for_Retail=[]
-        self.Clean_Fuel_Rebate_for_Retail_or_Lease=[]
-        self.Military_for_Lease=[]
-        self.Customer_Bonus_Cash_for_Retail=[]
-        self.Lender_Bonus_for_Standard_APR=[]
-        self.Student_College_Grad_for_Lease=[]
-        self.First_Responder_for_Lease=[]
-        self.Military_for_Retail=[]
-        self.First_Responder_for_Retail=[]
-        self.Limited_Term_Bonus_Cash=[]
-
+    
+    def final_parse(self, response):
+        my_dict={
+            'Student/College Grad for Retail or Lease':[],
+            'Military for Lease':[],
+            'First Responder for Retail':[],
+            'Lease Bonus Cash':[],
+            'Loyalty for Retail or Lease':[],
+            'Conquest for Lease':[],
+            'Mobility for Retail':[],
+            'Loyalty Lender Bonus Cash':[],
+            'Student/College Grad Lender Bonus':[],
+            'Conquest for Retail':[],
+            'Clean Fuel Rebate for Retail or Lease':[],
+            'Military for Lease':[],
+            'Customer Bonus Cash for Retail or Lease':[],
+            'Lender Bonus for Standard APR':[],
+            'Student/College Grad for Lease':[],
+            'First Responder for Lease':[],
+            'Military for Retail':[],
+            'First Responder for Retail':[],
+            'Limited Term Bonus Cash':[],
+            'Employee Pricing':[],
+            'Lender':[]}
         self.offers=response.css('li.unordered-list-item')
         self.cash_offers=self.offers.css('span::text').getall()
-        
-        for self.offer in self.cash_offers:
-            #our AI LOL ;-)
-            if 'Student/College Grad for Retail or Lease' in self.offer:
-                self.Student.append(self.offer.split()[0])
-            elif 'Military for Retail or Lease' in self.offer:
-                self.military.append(self.offer.split()[0])
-            elif 'First Responder for Retail or Lease' in self.offer:
-                self.First_Responder.append(self.offer.split()[0])
-            elif 'Lease Bonus Cash' in self.offer:
-                self.Customer_Bonus.append(self.offer.split()[0])
-            elif 'Loyalty for Retail or Lease' in self.offer:
-                self.Loyalty.append(self.offer.split()[0])
-            elif 'Mobility for Retail' in self.offer:
-                self.Mobility.append(self.offer.split()[0])
-            elif 'Conquest for Retail or Lease' in self.offer:
-                self.Conquest.append(self.offer.split()[0])
-            elif 'Loyalty Lender Bonus Cash' in self.offer:
-                self.Loyalty_Lender_Bonus_Cash.append(self.offer.split()[0])
-            elif 'Student/College Grad Lender Bonus' in self.offer:
-                self.Student_College_Grad_Lender_Bonus.append(self.offer.split()[0])
-            elif 'Conquest for Retail' in self.offer:
-                self.Conquest_for_Retail.append(self.offer.split()[0])
-            elif 'Mobility for Retail' in self.offer:
-                self.Mobility_for_Retail.append(self.offer.split()[0])
-            elif 'Clean Fuel Rebate for Retail or Lease' in self.offer:
-                self.Clean_Fuel_Rebate_for_Retail_or_Lease.append(self.offer.split()[0])
-            elif 'Military for Lease' in self.offer:
-                self.Military_for_Lease.append(self.offer.split()[0])
-            elif 'Customer Bonus Cash for Retail' in self.offer:
-                self.Customer_Bonus_Cash_for_Retail.append(self.offer.split()[0])
-            elif 'Lender Bonus for Standard APR' in self.offer:
-                self.Lender_Bonus_for_Standard_APR.append(self.offer.split()[0])
-            elif 'Student/College Grad for Lease' in self.offer:
-                self.Student_College_Grad_for_Lease.append(self.offer.split()[0])
-            elif 'First Responder for Lease' in self.offer:
-                self.First_Responder_for_Lease.append(self.offer.split()[0])
-            elif 'Military for Retail' in self.offer:
-                self.Military_for_Retail.append(self.offer).split()[0]
-            elif 'First Responder for Retail' in self.offer:
-                self.First_Responder_for_Retail.append(self.offer.split()[0])
-            elif 'Limited Term Bonus Cash' in self.offer:
-                self.Limited_Term_Bonus_Cash.append(self.offer.split()[0])
+        value='Customer Bonus Cash for Retail or Lease'
+        for offer in self.cash_offers:
+            if value in offer :
+                    my_dict['Customer Bonus Cash for Retail or Lease'].append(offer)
             else:
-                pass
+                for key in my_dict.keys():
+                    if key in offer:
+                        my_dict[key].append(offer.split()[0])
+        self.details=response.css('p.mb-0::text').getall()
+        for self.detail in self.details:
+            for key in my_dict.keys():
+                if len(my_dict[key])>1 and key.split()[0] in self.detail and key.split()[1] in self.detail:
+                        my_dict[key].append(self.detail)
+
         self.trim_value=response.css('option::text').getall()
         for self.trim_name in self.trim_value:
-            self.trim_data=self.trim_name
+
             yield{
                 'Name':response.css('h1.heading-2.mb-1_5::text').extract_first().split()[1],
                 'Model':response.css('h1.heading-2.mb-1_5::text').get(),
-                'Trim':self.trim_data,
-                'Student/College Grad for Retail or Lease':self.Student,
-                'Military for Retail or Lease':self.military,
-                'First Responder for Retail or Lease':self.First_Responder,
-                'Lease Bonus Cash':self.Customer_Bonus,
-                'Loyalty for Retail or Lease':self.Loyalty,
-                'Conquest for Retail or Lease':self.Conquest,
-                'Mobility for Retail':self.Mobility,
-                'Loyalty Lender Bonus Cash':self.Loyalty_Lender_Bonus_Cash,
-                'Student/College Grad Lender Bonus':self.Student_College_Grad_Lender_Bonus,
-                'Conquest for Retail':self.Conquest_for_Retail,
-                'Mobility for Retail':self.Mobility_for_Retail,
-                'Clean Fuel Rebate for Retail or Lease':self.Clean_Fuel_Rebate_for_Retail_or_Lease,
-                'Military for Lease':self.Military_for_Lease,
-                'Customer Bonus Cash for Retail':self.Customer_Bonus_Cash_for_Retail,
-                'Lender Bonus for Standard APR':self.Lender_Bonus_for_Standard_APR,
-                'Student/College Grad for Lease':self.Student_College_Grad_for_Lease,
-                'First Responder for Lease':self.First_Responder_for_Lease,
-                'Military for Retail':self.Military_for_Retail,
-                'First Responder for Retail':self.First_Responder_for_Retail,
-                'Limited Term Bonus Cash':self.Limited_Term_Bonus_Cash,
-            }#writing the data
+                'Trim':self.trim_name,
+                'Student/College Grad for Retail or Lease':my_dict['Student/College Grad for Retail or Lease'],
+                'Military for Retail or Lease':my_dict['Military for Lease'],
+                'First Responder for Retail or Lease':my_dict['First Responder for Retail'],
+                'Lease Bonus Cash':my_dict['Lease Bonus Cash'],
+                'Loyalty for Retail or Lease':my_dict['Loyalty for Retail or Lease'],
+                'Conquest for Retail or Lease':my_dict['Conquest for Lease'],
+                'Mobility for Retail':my_dict['Mobility for Retail'],
+                'Loyalty Lender Bonus Cash':my_dict['Loyalty Lender Bonus Cash'],
+                'Student/College Grad Lender Bonus':my_dict['Student/College Grad Lender Bonus'],
+                'Conquest for Retail':my_dict['Conquest for Retail'],
+                #'Mobility for Retail':my_dict['Mobility for Retail'],
+                'Clean Fuel Rebate for Retail or Lease':my_dict['Clean Fuel Rebate for Retail or Lease'],
+                'Military for Lease':my_dict['Military for Lease'],
+                'Customer Bonus Cash for Retail':my_dict['Customer Bonus Cash for Retail or Lease'],
+                'Lender Bonus for Standard APR':my_dict['Lender Bonus for Standard APR'],
+                'Student/College Grad for Lease':my_dict['First Responder for Lease'],
+                'First Responder for Lease':my_dict['First Responder for Lease'],
+                'Military for Retail':my_dict['Military for Retail'],
+                'First Responder for Retail':my_dict['First Responder for Retail'],
+                'Limited Term Bonus Cash':my_dict['Limited Term Bonus Cash'],
+                'Employee Pricing':my_dict['Employee Pricing'],
+                'Lender':my_dict['Lender']
+                }#writing the data
